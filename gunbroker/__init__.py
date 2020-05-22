@@ -1,20 +1,20 @@
 from bs4 import BeautifulSoup
 from requests import Session
 
-from pprint import pprint
-
 
 class GunBroker:
     def __init__(self):
-        self._session = Session()
-        self._url = "https://www.gunbroker.com"
+        self.session = Session()
+        self.session.headers.update({"User-Agent": "python-gunbroker (https://github.com/DACRepair/python-gunbroker)"})
+        self.url = "https://www.gunbroker.com"
 
     def _params(self, search: str, page: int = 1) -> dict:
         params = {'Keywords': search, "PageSize": 96, "Sort": 13, "PageIndex": page}
         return params
 
     def _html(self, params) -> str:
-        return self._session.get(self._url + "/All/search", params=params).text
+        data = self.session.get(self.url + "/All/search", params=params)
+        return data.text
 
     def _beautiful(self, html) -> BeautifulSoup:
         return BeautifulSoup(html, features="html.parser")
@@ -54,7 +54,11 @@ class GunBroker:
             time_left = time_left.split()
             _time_left = 0
             for entry in time_left:
-                val = int(''.join(filter(lambda x: x.isdigit(), entry)))
+                val = ''.join(filter(lambda x: x.isdigit(), entry))
+                if val.isdigit():
+                    val = int(val)
+                else:
+                    val = 0
                 if "s" in entry.lower():
                     _time_left += val
                 if "m" in entry.lower():
@@ -71,7 +75,7 @@ class GunBroker:
             "name": name,
             "desc": desc,
             "image": listing.find("div", class_="listing-image").find("img").get('src'),
-            "url": self._url + listing.find("a", class_="was-visited").get("href"),
+            "url": self.url + listing.find("a", class_="was-visited").get("href"),
             "seller": seller[0].text,
             "seller_rating": seller[1].text,
             "qty": qty,
@@ -88,8 +92,8 @@ class GunBroker:
         for page in range(1, self._get_page_count(search) + 1, 1):
             for listing in self._beautiful(self._html(self._params(search, page))).find_all("div", class_="listing"):
                 results.append(self._parse_listing(listing))
-                if len(results) >= limit and limit is not 0:
+                if len(results) >= limit != 0:
                     break
-            if len(results) >= limit and limit is not 0:
+            if len(results) >= limit != 0:
                 break
         return results
