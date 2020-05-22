@@ -60,4 +60,10 @@ print(gbroker.search("K98", limit=2)) # if limit is unset, all results will be r
 
 ## Legal
 I made this for personal use, any use of this library is done so at the users own risk. I am not licensing this as it
-is not something I care to support.
+is not something I care to support. This is also not to be used for malicious purposes. If you use this,
+please specify a user-agent like:
+```python
+from gunbroker import GunBroker
+test = GunBroker(user_agent="My Bot (my email address)")
+```
+so that GunBroker can contact you for being an idiot.

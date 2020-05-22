@@ -3,9 +3,11 @@ from requests import Session
 
 
 class GunBroker:
-    def __init__(self):
+    def __init__(self, user_agent: str = None):
+        if user_agent is None:
+            user_agent = "python-gunbroker (https://github.com/DACRepair/python-gunbroker)"
         self.session = Session()
-        self.session.headers.update({"User-Agent": "python-gunbroker (https://github.com/DACRepair/python-gunbroker)"})
+        self.session.headers.update({"User-Agent": user_agent})
         self.url = "https://www.gunbroker.com"
 
     def _params(self, search: str, page: int = 1) -> dict:
