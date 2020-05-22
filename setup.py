@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="python-gunbroker",
     description="Gunbroker search scraping library",
-    version="1.0",
+    version="1.1",
 
     author="DACRepair",
     author_email="dacrepair@gmail.com",
